@@ -241,10 +241,11 @@ class BossGame {
     gainExp(expAmount) {
     console.log('=== gainExp called with:', expAmount);
     
-    if (this.gameState.battle.gameOver) {
-        console.log('Game over block triggered');
-        return;
-    }
+    // REMOVE game over check completely
+    // if (this.gameState.battle.gameOver) {
+    //     console.log('Game over block triggered');
+    //     return;
+    // }
     
     // Add EXP
     this.gameState.player.exp += expAmount;
@@ -253,14 +254,16 @@ class BossGame {
     console.log('New EXP total:', this.gameState.player.exp);
     console.log('EXP to next level:', this.gameState.player.expToNextLevel);
     
+    this.addToLog(`🎉 Gained ${expAmount} EXP!`, 'system');
+    
     // Check for level up
     if (this.gameState.player.exp >= this.gameState.player.expToNextLevel) {
         console.log('LEVEL UP CONDITION MET!');
         this.levelUp();
     }
     
-    // Update display
     this.updateDisplay();
+}
     }
 
     levelUp() {
@@ -906,20 +909,15 @@ class BossGame {
     winGame() {
     console.log('=== WIN GAME FUNCTION CALLED ===');
     
+    // AWARD EXP FIRST sebelum set gameOver
+    const totalExp = 80;
+    console.log('Awarding EXP:', totalExp);
+    this.gainExp(totalExp);
+    
+    // THEN set game over
     this.gameState.battle.gameOver = true;
     this.stopBattleTimer();
     this.disableActions();
-    
-    // SIMPLE EXP AWARD - bypass complex calculation
-    const totalExp = 80;
-    
-    console.log('Awarding EXP:', totalExp);
-    console.log('Player before EXP:', this.gameState.player);
-    
-    // Call gainExp
-    this.gainExp(totalExp);
-    
-    console.log('Player after EXP:', this.gameState.player);
     
     this.bossSprite.textContent = '💀';
     this.bossStatus.textContent = 'DEFEATED';
@@ -930,8 +928,8 @@ class BossGame {
     this.addToLog(`🎉 Gained ${totalExp} EXP!`, 'system');
     this.showMessage('VICTORY! You defeated the Boss!', 'victory');
     
-    // Force UI update
     this.updateDisplay();
+}
     }
 
     loseGame() {
