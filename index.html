@@ -3,61 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS GAME - Defeat The Boss!</title>
+    <title>BOSS GAME - Epic Battle Adventure</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🎮 BOSS GAME 🎮</h1>
-            <p>Defeat the Boss before your health runs out!</p>
+        <!-- Header Section -->
+        <header class="game-header">
+            <h1>⚔️ BOSS BATTLE ADVENTURE ⚔️</h1>
+            <p class="subtitle">Defeat the Evil Boss before your health runs out!</p>
+            <div class="level-indicator">
+                <span class="level-text">Level: 1</span>
+                <span class="difficulty">Difficulty: Normal</span>
+            </div>
         </header>
 
+        <!-- Game Stats -->
         <div class="game-stats">
-            <div class="stat">
-                <span>Player HP: </span>
-                <div class="health-bar">
-                    <div id="playerHealth" class="health-fill"></div>
+            <div class="stat player-stat">
+                <div class="stat-header">
+                    <span class="stat-title">🦸 HERO</span>
+                    <span class="hp-text">HP: <span id="playerHp">100</span>/100</span>
                 </div>
-                <span id="playerHp">100</span>
+                <div class="health-bar-container">
+                    <div class="health-bar">
+                        <div id="playerHealth" class="health-fill player-health-fill"></div>
+                    </div>
+                    <div class="health-overlay"></div>
+                </div>
+                <div class="stat-footer">
+                    <span class="special-count">Special Attacks: <span id="specialCount">3</span></span>
+                </div>
             </div>
-            <div class="stat">
-                <span>Boss HP: </span>
-                <div class="health-bar">
-                    <div id="bossHealth" class="health-fill boss-health"></div>
+
+            <div class="stat boss-stat">
+                <div class="stat-header">
+                    <span class="stat-title">👹 EVIL BOSS</span>
+                    <span class="hp-text">HP: <span id="bossHp">200</span>/200</span>
                 </div>
-                <span id="bossHp">200</span>
+                <div class="health-bar-container">
+                    <div class="health-bar">
+                        <div id="bossHealth" class="health-fill boss-health-fill"></div>
+                    </div>
+                    <div class="health-overlay"></div>
+                </div>
+                <div class="stat-footer">
+                    <span class="boss-rage">Rage Meter: <span id="rageMeter">0%</span></span>
+                </div>
             </div>
         </div>
 
-        <div class="battle-area">
-            <div class="character player">
-                <div class="sprite">🦸</div>
-                <div class="name">Hero</div>
+        <!-- Battle Arena -->
+        <div class="battle-arena">
+            <!-- Player Character -->
+            <div class="character player-character">
+                <div class="character-frame">
+                    <div class="sprite" id="playerSprite">🦸</div>
+                    <div class="character-effects" id="playerEffects"></div>
+                </div>
+                <div class="character-info">
+                    <div class="name">Hero Warrior</div>
+                    <div class="status" id="playerStatus">Ready for battle!</div>
+                </div>
+            </div>
+
+            <!-- VS Badge -->
+            <div class="vs-section">
+                <div class="vs-badge">VS</div>
+                <div class="battle-timer">Time: <span id="battleTimer">00:00</span></div>
+            </div>
+
+            <!-- Boss Character -->
+            <div class="character boss-character">
+                <div class="character-frame">
+                    <div class="sprite" id="bossSprite">👹</div>
+                    <div class="character-effects" id="bossEffects"></div>
+                </div>
+                <div class="character-info">
+                    <div class="name">Dark Overlord</div>
+                    <div class="status" id="bossStatus">Waiting...</div>
+                </div>
+            </div>
+
+            <!-- Animation Container -->
+            <div class="animation-container">
+                <!-- Player Projectiles -->
+                <div class="projectile" id="playerSword">⚔️</div>
+                <div class="projectile" id="playerArrow">🏹</div>
+                <div class="projectile" id="playerMagic">🔮</div>
+                
+                <!-- Boss Projectiles -->
+                <div class="projectile" id="bossFireball">🔥</div>
+                <div class="projectile" id="bossDarkness">⚫</div>
+                <div class="projectile" id="bossLightning">⚡</div>
+                
+                <!-- Explosion Effects -->
+                <div class="effect" id="explosion">💥</div>
+                <div class="effect" id="bigExplosion">💫</div>
+                <div class="effect" id="magicExplosion">✨</div>
+                
+                <!-- Hit Effects -->
+                <div class="effect" id="playerHit">💢</div>
+                <div class="effect" id="bossHit">👊</div>
+                
+                <!-- Healing Effects -->
+                <div class="effect" id="healEffect">💚</div>
+                <div class="effect" id="shieldEffect">🛡️</div>
+                
+                <!-- Special Effects -->
+                <div class="effect" id="criticalEffect">💫</div>
+                <div class="effect" id="rageEffect">😡</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-panel">
+            <div class="action-row">
+                <button id="attackBtn" class="btn attack-btn" title="Basic Attack - 15 damage">
+                    <span class="btn-icon">⚔️</span>
+                    <span class="btn-text">Attack</span>
+                    <span class="btn-desc">15 DMG</span>
+                </button>
+                
+                <button id="strongAttackBtn" class="btn strong-attack-btn" title="Strong Attack - 25 damage (2 turns cooldown)">
+                    <span class="btn-icon">💪</span>
+                    <span class="btn-text">Strong Attack</span>
+                    <span class="btn-desc">25 DMG</span>
+                </button>
+                
+                <button id="healBtn" class="btn heal-btn" title="Heal - Restore 20 HP">
+                    <span class="btn-icon">❤️</span>
+                    <span class="btn-text">Heal</span>
+                    <span class="btn-desc">+20 HP</span>
+                </button>
             </div>
             
-            <div class="vs">VS</div>
+            <div class="action-row">
+                <button id="specialBtn" class="btn special-btn" title="Special Attack - 35 damage (3 uses)">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-text">Special Attack</span>
+                    <span class="btn-desc">35 DMG</span>
+                </button>
+                
+                <button id="defendBtn" class="btn defend-btn" title="Defend - Reduce next damage by 50%">
+                    <span class="btn-icon">🛡️</span>
+                    <span class="btn-text">Defend</span>
+                    <span class="btn-desc">-50% DMG</span>
+                </button>
+                
+                <button id="itemBtn" class="btn item-btn" title="Use Item - Potion restores 30 HP">
+                    <span class="btn-icon">🧪</span>
+                    <span class="btn-text">Use Item</span>
+                    <span class="btn-desc">Potion</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Cooldown & Status -->
+        <div class="status-panel">
+            <div class="cooldown-tracker">
+                <div class="cooldown-item">
+                    <span>Strong Attack:</span>
+                    <div class="cooldown-bar">
+                        <div id="strongAttackCooldown" class="cooldown-fill"></div>
+                    </div>
+                </div>
+                <div class="cooldown-item">
+                    <span>Defend:</span>
+                    <div class="cooldown-bar">
+                        <div id="defendCooldown" class="cooldown-fill"></div>
+                    </div>
+                </div>
+            </div>
             
-            <div class="character boss">
-                <div class="sprite">👹</div>
-                <div class="name">Evil Boss</div>
+            <div class="battle-stats">
+                <div class="battle-stat">
+                    <span>Turn: <span id="turnCount">1</span></span>
+                </div>
+                <div class="battle-stat">
+                    <span>Damage Dealt: <span id="damageDealt">0</span></span>
+                </div>
+                <div class="battle-stat">
+                    <span>Damage Taken: <span id="damageTaken">0</span></span>
+                </div>
             </div>
         </div>
 
-        <div class="actions">
-            <button id="attackBtn" class="btn attack">⚔️ Attack</button>
-            <button id="healBtn" class="btn heal">❤️ Heal</button>
-            <button id="specialBtn" class="btn special">✨ Special Attack</button>
-        </div>
-
-        <div class="game-log">
-            <div id="log" class="log-content">
-                <p>Game started! Defeat the Evil Boss!</p>
+        <!-- Game Log -->
+        <div class="game-log-container">
+            <div class="log-header">
+                <h3>📜 BATTLE LOG</h3>
+                <button id="clearLogBtn" class="clear-log-btn">Clear</button>
+            </div>
+            <div class="game-log">
+                <div id="log" class="log-content">
+                    <div class="log-entry system">
+                        <span class="log-time">[00:00]</span>
+                        <span class="log-text">Battle started! Defeat the Evil Boss!</span>
+                    </div>
+                    <div class="log-entry system">
+                        <span class="log-time">[00:00]</span>
+                        <span class="log-text">Use your skills wisely and watch for cooldowns!</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="controls">
-            <button id="resetBtn" class="btn reset">🔄 Reset Game</button>
+        <!-- Controls & Game Management -->
+        <div class="control-panel">
+            <div class="control-group">
+                <button id="resetBtn" class="btn reset-btn">
+                    <span class="btn-icon">🔄</span>
+                    New Game
+                </button>
+                
+                <button id="pauseBtn" class="btn pause-btn">
+                    <span class="btn-icon">⏸️</span>
+                    Pause
+                </button>
+                
+                <button id="soundBtn" class="btn sound-btn">
+                    <span class="btn-icon">🔊</span>
+                    Sound
+                </button>
+            </div>
+            
+            <div class="game-settings">
+                <div class="setting-item">
+                    <label for="difficultySelect">Difficulty:</label>
+                    <select id="difficultySelect" class="difficulty-select">
+                        <option value="easy">Easy</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Messages -->
+        <div id="gameMessage" class="game-message">
+            <div class="message-content" id="messageContent">
+                Welcome to Boss Battle Adventure!
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="loading-screen">
+            <div class="loading-content">
+                <div class="loading-spinner">⚔️</div>
+                <h2>BOSS BATTLE ADVENTURE</h2>
+                <p>Loading epic battle...</p>
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+            </div>
         </div>
     </div>
 
