@@ -2,6 +2,7 @@ class BossGame {
     constructor() {
         this.gameState = {
             player: {
+                // CURRENT STATS
                 hp: 100,
                 maxHp: 100,
                 attack: 15,
@@ -11,7 +12,19 @@ class BossGame {
                 potionHeal: 30,
                 isDefending: false,
                 specialAttacks: 3,
-                items: 3
+                items: 3,
+                
+                // NEW LEVEL SYSTEM
+                level: 1,
+                exp: 0,
+                expToNextLevel: 100,
+                skillPoints: 0,
+                totalExp: 0,
+                
+                // BASE STATS untuk reference
+                baseMaxHp: 100,
+                baseAttack: 15,
+                baseHeal: 20
             },
             
             boss: {
@@ -63,6 +76,13 @@ class BossGame {
         this.bossHpText = document.getElementById('bossHp');
         this.specialCount = document.getElementById('specialCount');
         this.rageMeter = document.getElementById('rageMeter');
+
+        // NEW: Level & EXP Elements
+        this.playerLevel = document.getElementById('playerLevel');
+        this.currentExp = document.getElementById('currentExp');
+        this.nextLevelExp = document.getElementById('nextLevelExp');
+        this.expFill = document.getElementById('expFill');
+        this.skillPoints = document.getElementById('skillPoints');
 
         // Character Elements
         this.playerSprite = document.getElementById('playerSprite');
@@ -196,8 +216,17 @@ class BossGame {
 
         const diff = difficulties[this.gameState.battle.difficulty];
         
-        this.gameState.player.maxHp = diff.playerHp;
-        this.gameState.player.hp = diff.playerHp;
+        // Apply base stats + level bonuses
+        const levelBonusHp = (this.gameState.player.level - 1) * 10;
+        const levelBonusAttack = (this.gameState.player.level - 1) * 2;
+        
+        this.gameState.player.baseMaxHp = diff.playerHp;
+        this.gameState.player.maxHp = diff.playerHp + levelBonusHp;
+        this.gameState.player.hp = Math.min(this.gameState.player.hp, this.gameState.player.maxHp);
+        
+        this.gameState.player.baseAttack = 15;
+        this.gameState.player.attack = this.gameState.player.baseAttack + levelBonusAttack;
+        
         this.gameState.boss.maxHp = diff.bossHp;
         this.gameState.boss.hp = diff.bossHp;
         this.gameState.boss.attack = diff.bossAttack;
@@ -206,6 +235,63 @@ class BossGame {
         this.updateDisplay();
         this.showMessage(`Difficulty set to: ${this.gameState.battle.difficulty.toUpperCase()}`, 'system');
     }
+
+    // ========== NEW LEVEL SYSTEM METHODS ==========
+
+    gainExp(expAmount) {
+        if (this.gameState.battle.gameOver) return;
+        
+        this.gameState.player.exp += expAmount;
+        this.gameState.player.totalExp += expAmount;
+        
+        this.addToLog(`🎉 Gained ${expAmount} EXP!`, 'system');
+        
+        // Check level up
+        if (this.gameState.player.exp >= this.gameState.player.expToNextLevel) {
+            this.levelUp();
+        }
+        
+        this.updateDisplay();
+    }
+
+    levelUp() {
+        this.gameState.player.level++;
+        this.gameState.player.skillPoints++;
+        this.gameState.player.exp -= this.gameState.player.expToNextLevel;
+        
+        // Increase EXP needed for next level
+        this.gameState.player.expToNextLevel = Math.floor(this.gameState.player.expToNextLevel * 1.5);
+        
+        // Auto stat improvements on level up
+        this.gameState.player.maxHp += 10;
+        this.gameState.player.hp = this.gameState.player.maxHp; // Full heal on level up
+        this.gameState.player.attack += 2;
+        this.gameState.player.heal += 3;
+        
+        // Update base stats untuk difficulty calculations
+        this.gameState.player.baseMaxHp += 10;
+        this.gameState.player.baseAttack += 2;
+        
+        // Show level up message
+        this.showLevelUpMessage();
+        this.addToLog(`🎊 LEVEL UP! Reached Level ${this.gameState.player.level}`, 'victory');
+        this.addToLog(`❤️ +10 Max HP | ⚔️ +2 Attack | ✨ +1 Skill Point`, 'system');
+        
+        this.updateDisplay();
+    }
+
+    showLevelUpMessage() {
+        const message = `LEVEL UP! Reached Level ${this.gameState.player.level}`;
+        this.showMessage(message, 'victory');
+        
+        // Special effect untuk level up
+        this.playerSprite.style.animation = 'characterHit 0.5s ease';
+        setTimeout(() => {
+            this.playerSprite.style.animation = '';
+        }, 500);
+    }
+
+    // ========== COMBAT METHODS ==========
 
     async playerAttack(type) {
         if (!this.canPerformAction()) return;
@@ -654,6 +740,16 @@ class BossGame {
         this.specialCount.textContent = this.gameState.player.specialAttacks;
         this.rageMeter.textContent = `${this.gameState.boss.rage}%`;
 
+        // NEW: Update level & EXP
+        this.playerLevel.textContent = `Lv.${this.gameState.player.level}`;
+        this.currentExp.textContent = this.gameState.player.exp;
+        this.nextLevelExp.textContent = this.gameState.player.expToNextLevel;
+        this.skillPoints.textContent = this.gameState.player.skillPoints;
+
+        // Update EXP bar
+        const expPercent = (this.gameState.player.exp / this.gameState.player.expToNextLevel) * 100;
+        this.expFill.style.width = `${expPercent}%`;
+
         // Update battle stats
         this.turnCount.textContent = this.gameState.battle.turn;
         this.damageDealt.textContent = this.gameState.battle.damageDealt;
@@ -730,19 +826,37 @@ class BossGame {
     resetGame() {
         this.stopBattleTimer();
         
-        // Reset game state
+        // Reset game state (TAPI KEEP LEVEL & EXP)
+        const savedLevel = this.gameState.player.level;
+        const savedExp = this.gameState.player.exp;
+        const savedExpToNextLevel = this.gameState.player.expToNextLevel;
+        const savedSkillPoints = this.gameState.player.skillPoints;
+        const savedTotalExp = this.gameState.player.totalExp;
+        const savedBaseMaxHp = this.gameState.player.baseMaxHp;
+        const savedBaseAttack = this.gameState.player.baseAttack;
+
         this.gameState = {
             player: {
-                hp: 100,
-                maxHp: 100,
-                attack: 15,
-                strongAttack: 25,
-                specialAttack: 35,
-                heal: 20,
+                // Reset battle stats tapi keep progression
+                hp: 100 + ((savedLevel - 1) * 10),
+                maxHp: 100 + ((savedLevel - 1) * 10),
+                attack: 15 + ((savedLevel - 1) * 2),
+                strongAttack: 25 + ((savedLevel - 1) * 2),
+                specialAttack: 35 + ((savedLevel - 1) * 2),
+                heal: 20 + ((savedLevel - 1) * 3),
                 potionHeal: 30,
                 isDefending: false,
                 specialAttacks: 3,
-                items: 3
+                items: 3,
+                
+                // Keep level progression
+                level: savedLevel,
+                exp: savedExp,
+                expToNextLevel: savedExpToNextLevel,
+                skillPoints: savedSkillPoints,
+                totalExp: savedTotalExp,
+                baseMaxHp: savedBaseMaxHp,
+                baseAttack: savedBaseAttack
             },
             boss: {
                 hp: 200,
@@ -775,7 +889,7 @@ class BossGame {
         this.startBattleTimer();
         this.clearLog();
         this.addToLog('New battle started! Defeat the Evil Boss!', 'system');
-        this.addToLog('Use your skills wisely and watch for cooldowns!', 'system');
+        this.addToLog(`You are Level ${savedLevel} with ${savedSkillPoints} skill points`, 'system');
         this.updateDisplay();
         this.showMessage('New Game Started!', 'system');
     }
@@ -785,12 +899,21 @@ class BossGame {
         this.stopBattleTimer();
         this.disableActions();
         
+        // Calculate EXP based on battle performance
+        const baseExp = 80;
+        const turnBonus = Math.max(0, 50 - (this.gameState.battle.turn * 2)); // Less turns = more bonus
+        const damageBonus = Math.floor(this.gameState.battle.damageDealt / 10);
+        const totalExp = baseExp + turnBonus + damageBonus;
+        
+        this.gainExp(totalExp);
+        
         this.bossSprite.textContent = '💀';
         this.bossStatus.textContent = 'DEFEATED';
         this.bossStatus.style.color = '#4ecdc4';
         
         this.addToLog('🎉 VICTORY! You defeated the Evil Boss!', 'victory');
-        this.addToLog(`Battle completed in ${this.battleTimer.textContent}`, 'system');
+        this.addToLog(`⏱️ Battle completed in ${this.battleTimer.textContent}`, 'system');
+        this.addToLog(`📊 Performance: ${turnBonus} turn bonus + ${damageBonus} damage bonus`, 'system');
         this.showMessage('VICTORY! You defeated the Boss!', 'victory');
     }
 
