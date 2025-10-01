@@ -79,10 +79,13 @@ class BossGame {
 
         // NEW: Level & EXP Elements
         this.playerLevel = document.getElementById('playerLevel');
+        this.playerLevelBadge = document.getElementById('playerLevelBadge');
         this.currentExp = document.getElementById('currentExp');
         this.nextLevelExp = document.getElementById('nextLevelExp');
         this.expFill = document.getElementById('expFill');
         this.skillPoints = document.getElementById('skillPoints');
+        this.playerMaxHp = document.getElementById('playerMaxHp');
+        this.bossMaxHp = document.getElementById('bossMaxHp');
 
         // Character Elements
         this.playerSprite = document.getElementById('playerSprite');
@@ -239,31 +242,17 @@ class BossGame {
     // ========== NEW LEVEL SYSTEM METHODS ==========
 
     gainExp(expAmount) {
-    console.log('=== gainExp called with:', expAmount);
-    
-    // REMOVE game over check completely
-    // if (this.gameState.battle.gameOver) {
-    //     console.log('Game over block triggered');
-    //     return;
-    // }
-    
-    // Add EXP
-    this.gameState.player.exp += expAmount;
-    this.gameState.player.totalExp += expAmount;
-    
-    console.log('New EXP total:', this.gameState.player.exp);
-    console.log('EXP to next level:', this.gameState.player.expToNextLevel);
-    
-    this.addToLog(`🎉 Gained ${expAmount} EXP!`, 'system');
-    
-    // Check for level up
-    if (this.gameState.player.exp >= this.gameState.player.expToNextLevel) {
-        console.log('LEVEL UP CONDITION MET!');
-        this.levelUp();
-    }
-    
-    this.updateDisplay();
-}
+        this.gameState.player.exp += expAmount;
+        this.gameState.player.totalExp += expAmount;
+        
+        this.addToLog(`🎉 Gained ${expAmount} EXP!`, 'system');
+        
+        // Check level up
+        if (this.gameState.player.exp >= this.gameState.player.expToNextLevel) {
+            this.levelUp();
+        }
+        
+        this.updateDisplay();
     }
 
     levelUp() {
@@ -297,10 +286,10 @@ class BossGame {
         this.showMessage(message, 'victory');
         
         // Special effect untuk level up
-        this.playerSprite.style.animation = 'characterHit 0.5s ease';
+        this.playerSprite.classList.add('level-up-animation');
         setTimeout(() => {
-            this.playerSprite.style.animation = '';
-        }, 500);
+            this.playerSprite.classList.remove('level-up-animation');
+        }, 1000);
     }
 
     // ========== COMBAT METHODS ==========
@@ -749,11 +738,14 @@ class BossGame {
         // Update text
         this.playerHpText.textContent = this.gameState.player.hp;
         this.bossHpText.textContent = Math.max(0, this.gameState.boss.hp);
+        this.playerMaxHp.textContent = this.gameState.player.maxHp;
+        this.bossMaxHp.textContent = this.gameState.boss.maxHp;
         this.specialCount.textContent = this.gameState.player.specialAttacks;
         this.rageMeter.textContent = `${this.gameState.boss.rage}%`;
 
         // NEW: Update level & EXP
-        this.playerLevel.textContent = `Lv.${this.gameState.player.level}`;
+        this.playerLevel.textContent = this.gameState.player.level;
+        this.playerLevelBadge.textContent = `Lv.${this.gameState.player.level}`;
         this.currentExp.textContent = this.gameState.player.exp;
         this.nextLevelExp.textContent = this.gameState.player.expToNextLevel;
         this.skillPoints.textContent = this.gameState.player.skillPoints;
@@ -907,29 +899,27 @@ class BossGame {
     }
 
     winGame() {
-    console.log('=== WIN GAME FUNCTION CALLED ===');
-    
-    // AWARD EXP FIRST sebelum set gameOver
-    const totalExp = 80;
-    console.log('Awarding EXP:', totalExp);
-    this.gainExp(totalExp);
-    
-    // THEN set game over
-    this.gameState.battle.gameOver = true;
-    this.stopBattleTimer();
-    this.disableActions();
-    
-    this.bossSprite.textContent = '💀';
-    this.bossStatus.textContent = 'DEFEATED';
-    this.bossStatus.style.color = '#4ecdc4';
-    
-    this.addToLog('🎉 VICTORY! You defeated the Evil Boss!', 'victory');
-    this.addToLog(`⏱️ Battle completed in ${this.battleTimer.textContent}`, 'system');
-    this.addToLog(`🎉 Gained ${totalExp} EXP!`, 'system');
-    this.showMessage('VICTORY! You defeated the Boss!', 'victory');
-    
-    this.updateDisplay();
-}
+        // AWARD EXP FIRST sebelum set gameOver
+        const baseExp = 80;
+        const turnBonus = Math.max(0, 50 - (this.gameState.battle.turn * 2));
+        const damageBonus = Math.floor(this.gameState.battle.damageDealt / 10);
+        const totalExp = baseExp + turnBonus + damageBonus;
+        
+        this.gainExp(totalExp);
+        
+        // THEN set game over
+        this.gameState.battle.gameOver = true;
+        this.stopBattleTimer();
+        this.disableActions();
+        
+        this.bossSprite.textContent = '💀';
+        this.bossStatus.textContent = 'DEFEATED';
+        this.bossStatus.style.color = '#4ecdc4';
+        
+        this.addToLog('🎉 VICTORY! You defeated the Evil Boss!', 'victory');
+        this.addToLog(`⏱️ Battle completed in ${this.battleTimer.textContent}`, 'system');
+        this.addToLog(`📊 Performance: ${turnBonus} turn bonus + ${damageBonus} damage bonus`, 'system');
+        this.showMessage('VICTORY! You defeated the Boss!', 'victory');
     }
 
     loseGame() {
