@@ -239,19 +239,28 @@ class BossGame {
     // ========== NEW LEVEL SYSTEM METHODS ==========
 
     gainExp(expAmount) {
-        if (this.gameState.battle.gameOver) return;
-        
-        this.gameState.player.exp += expAmount;
-        this.gameState.player.totalExp += expAmount;
-        
-        this.addToLog(`🎉 Gained ${expAmount} EXP!`, 'system');
-        
-        // Check level up
-        if (this.gameState.player.exp >= this.gameState.player.expToNextLevel) {
-            this.levelUp();
-        }
-        
-        this.updateDisplay();
+    console.log('=== gainExp called with:', expAmount);
+    
+    if (this.gameState.battle.gameOver) {
+        console.log('Game over block triggered');
+        return;
+    }
+    
+    // Add EXP
+    this.gameState.player.exp += expAmount;
+    this.gameState.player.totalExp += expAmount;
+    
+    console.log('New EXP total:', this.gameState.player.exp);
+    console.log('EXP to next level:', this.gameState.player.expToNextLevel);
+    
+    // Check for level up
+    if (this.gameState.player.exp >= this.gameState.player.expToNextLevel) {
+        console.log('LEVEL UP CONDITION MET!');
+        this.levelUp();
+    }
+    
+    // Update display
+    this.updateDisplay();
     }
 
     levelUp() {
