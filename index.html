@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOSS GAME - Defeat The Boss!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 BOSS GAME 🎮</h1>
+            <p>Defeat the Boss before your health runs out!</p>
+        </header>
+
+        <div class="game-stats">
+            <div class="stat">
+                <span>Player HP: </span>
+                <div class="health-bar">
+                    <div id="playerHealth" class="health-fill"></div>
+                </div>
+                <span id="playerHp">100</span>
+            </div>
+            <div class="stat">
+                <span>Boss HP: </span>
+                <div class="health-bar">
+                    <div id="bossHealth" class="health-fill boss-health"></div>
+                </div>
+                <span id="bossHp">200</span>
+            </div>
+        </div>
+
+        <div class="battle-area">
+            <div class="character player">
+                <div class="sprite">🦸</div>
+                <div class="name">Hero</div>
+            </div>
+            
+            <div class="vs">VS</div>
+            
+            <div class="character boss">
+                <div class="sprite">👹</div>
+                <div class="name">Evil Boss</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="attackBtn" class="btn attack">⚔️ Attack</button>
+            <button id="healBtn" class="btn heal">❤️ Heal</button>
+            <button id="specialBtn" class="btn special">✨ Special Attack</button>
+        </div>
+
+        <div class="game-log">
+            <div id="log" class="log-content">
+                <p>Game started! Defeat the Evil Boss!</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="resetBtn" class="btn reset">🔄 Reset Game</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
