@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS GAME - Epic Battle Adventure</title>
+    <title>Hero Adventure Game - Epic Battle</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <!-- Header Section -->
         <header class="game-header">
-            <h1>⚔️ BOSS BATTLE ADVENTURE ⚔️</h1>
-            <p class="subtitle">Defeat the Evil Boss before your health runs out!</p>
+            <h1>⚔️ HERO ADVENTURE GAME ⚔️</h1>
+            <p class="subtitle">Defeat the Evil Boss and Level Up Your Hero!</p>
             <div class="level-indicator">
-                <span class="level-text">Level: 1</span>
+                <span class="level-text">Level: <span id="playerLevel">1</span></span>
                 <span class="difficulty">Difficulty: Normal</span>
             </div>
         </header>
@@ -22,31 +22,49 @@
         <div class="game-stats">
             <div class="stat player-stat">
                 <div class="stat-header">
-                    <span class="stat-title">🦸 HERO</span>
-                    <span class="hp-text">HP: <span id="playerHp">100</span>/100</span>
+                    <span class="stat-title">🦸 HERO <span class="player-level" id="playerLevelBadge">Lv.1</span></span>
+                    <span class="hp-text">HP: <span id="playerHp">100</span>/<span id="playerMaxHp">100</span></span>
                 </div>
+                
+                <!-- Health Bar -->
                 <div class="health-bar-container">
                     <div class="health-bar">
                         <div id="playerHealth" class="health-fill player-health-fill"></div>
                     </div>
                     <div class="health-overlay"></div>
                 </div>
+                
+                <!-- NEW: EXP Bar -->
+                <div class="exp-container">
+                    <div class="exp-label">
+                        <span>EXP: </span>
+                        <span><span id="currentExp">0</span>/<span id="nextLevelExp">100</span></span>
+                    </div>
+                    <div class="exp-bar">
+                        <div id="expFill" class="exp-fill"></div>
+                    </div>
+                </div>
+                
                 <div class="stat-footer">
                     <span class="special-count">Special Attacks: <span id="specialCount">3</span></span>
+                    <span class="skill-points">Skill Points: <span id="skillPoints">0</span></span>
                 </div>
             </div>
 
             <div class="stat boss-stat">
                 <div class="stat-header">
                     <span class="stat-title">👹 EVIL BOSS</span>
-                    <span class="hp-text">HP: <span id="bossHp">200</span>/200</span>
+                    <span class="hp-text">HP: <span id="bossHp">200</span>/<span id="bossMaxHp">200</span></span>
                 </div>
+                
+                <!-- Health Bar -->
                 <div class="health-bar-container">
                     <div class="health-bar">
                         <div id="bossHealth" class="health-fill boss-health-fill"></div>
                     </div>
                     <div class="health-overlay"></div>
                 </div>
+                
                 <div class="stat-footer">
                     <span class="boss-rage">Rage Meter: <span id="rageMeter">0%</span></span>
                 </div>
@@ -199,11 +217,15 @@
                 <div id="log" class="log-content">
                     <div class="log-entry system">
                         <span class="log-time">[00:00]</span>
-                        <span class="log-text">Battle started! Defeat the Evil Boss!</span>
+                        <span class="log-text">Welcome to Hero Adventure Game!</span>
                     </div>
                     <div class="log-entry system">
                         <span class="log-time">[00:00]</span>
-                        <span class="log-text">Use your skills wisely and watch for cooldowns!</span>
+                        <span class="log-text">Defeat bosses to gain EXP and level up!</span>
+                    </div>
+                    <div class="log-entry system">
+                        <span class="log-time">[00:00]</span>
+                        <span class="log-text">Use skill points to unlock powerful abilities!</span>
                     </div>
                 </div>
             </div>
@@ -243,7 +265,7 @@
         <!-- Game Messages -->
         <div id="gameMessage" class="game-message">
             <div class="message-content" id="messageContent">
-                Welcome to Boss Battle Adventure!
+                Welcome to Hero Adventure Game!
             </div>
         </div>
 
@@ -251,10 +273,26 @@
         <div id="loadingScreen" class="loading-screen">
             <div class="loading-content">
                 <div class="loading-spinner">⚔️</div>
-                <h2>BOSS BATTLE ADVENTURE</h2>
-                <p>Loading epic battle...</p>
+                <h2>HERO ADVENTURE GAME</h2>
+                <p>Loading epic adventure...</p>
                 <div class="loading-bar">
                     <div class="loading-progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Skill Tree Modal (Placeholder for Future) -->
+        <div id="skillTreeModal" class="skill-tree-modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>🌟 Skill Tree</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Skill Tree coming soon! Use your skill points to unlock powerful abilities!</p>
+                    <div class="skill-points-display">
+                        Available Skill Points: <span id="modalSkillPoints">0</span>
+                    </div>
                 </div>
             </div>
         </div>
