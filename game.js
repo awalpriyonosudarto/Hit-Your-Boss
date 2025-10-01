@@ -895,26 +895,34 @@ class BossGame {
     }
 
     winGame() {
-        this.gameState.battle.gameOver = true;
-        this.stopBattleTimer();
-        this.disableActions();
-        
-        // Calculate EXP based on battle performance
-        const baseExp = 80;
-        const turnBonus = Math.max(0, 50 - (this.gameState.battle.turn * 2)); // Less turns = more bonus
-        const damageBonus = Math.floor(this.gameState.battle.damageDealt / 10);
-        const totalExp = baseExp + turnBonus + damageBonus;
-        
-        this.gainExp(totalExp);
-        
-        this.bossSprite.textContent = '💀';
-        this.bossStatus.textContent = 'DEFEATED';
-        this.bossStatus.style.color = '#4ecdc4';
-        
-        this.addToLog('🎉 VICTORY! You defeated the Evil Boss!', 'victory');
-        this.addToLog(`⏱️ Battle completed in ${this.battleTimer.textContent}`, 'system');
-        this.addToLog(`📊 Performance: ${turnBonus} turn bonus + ${damageBonus} damage bonus`, 'system');
-        this.showMessage('VICTORY! You defeated the Boss!', 'victory');
+    console.log('=== WIN GAME FUNCTION CALLED ===');
+    
+    this.gameState.battle.gameOver = true;
+    this.stopBattleTimer();
+    this.disableActions();
+    
+    // SIMPLE EXP AWARD - bypass complex calculation
+    const totalExp = 80;
+    
+    console.log('Awarding EXP:', totalExp);
+    console.log('Player before EXP:', this.gameState.player);
+    
+    // Call gainExp
+    this.gainExp(totalExp);
+    
+    console.log('Player after EXP:', this.gameState.player);
+    
+    this.bossSprite.textContent = '💀';
+    this.bossStatus.textContent = 'DEFEATED';
+    this.bossStatus.style.color = '#4ecdc4';
+    
+    this.addToLog('🎉 VICTORY! You defeated the Evil Boss!', 'victory');
+    this.addToLog(`⏱️ Battle completed in ${this.battleTimer.textContent}`, 'system');
+    this.addToLog(`🎉 Gained ${totalExp} EXP!`, 'system');
+    this.showMessage('VICTORY! You defeated the Boss!', 'victory');
+    
+    // Force UI update
+    this.updateDisplay();
     }
 
     loseGame() {
