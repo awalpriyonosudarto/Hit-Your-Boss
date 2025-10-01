@@ -142,6 +142,18 @@ body {
 .stat-title {
     font-size: 1.3em;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.player-level {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
 }
 
 .hp-text {
@@ -202,12 +214,74 @@ body {
     border-radius: 10px;
 }
 
+/* ===== NEW: EXP BAR STYLES ===== */
+.exp-container {
+    margin: 15px 0;
+}
+
+.exp-label {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+}
+
+.exp-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.exp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FFD700, #FFA500, #FF8C00);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    position: relative;
+    width: 0%;
+}
+
+.exp-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+.exp-fill.level-up {
+    animation: levelUpGlow 0.8s ease-in-out;
+}
+
+@keyframes levelUpGlow {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.8); box-shadow: 0 0 20px #FFD700; }
+    100% { filter: brightness(1); }
+}
+
 .stat-footer {
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
     font-size: 0.9em;
     color: var(--text-dim);
+}
+
+.skill-points {
+    color: var(--text-gold);
+    font-weight: bold;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 /* ===== BATTLE ARENA STYLES ===== */
@@ -551,6 +625,18 @@ body {
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.05);
     border-left: 4px solid #666;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .log-entry.player { border-left-color: #2196F3; background: rgba(33, 150, 243, 0.1); }
@@ -562,6 +648,7 @@ body {
 .log-entry.critical { border-left-color: #FF4081; background: rgba(255, 64, 129, 0.1); }
 .log-entry.victory { border-left-color: #4CAF50; background: rgba(76, 175, 80, 0.2); font-weight: bold; }
 .log-entry.defeat { border-left-color: #f44336; background: rgba(244, 67, 54, 0.2); font-weight: bold; }
+.log-entry.system { border-left-color: #607D8B; background: rgba(96, 125, 139, 0.1); }
 
 .log-time {
     color: var(--text-dim);
@@ -636,14 +723,30 @@ body {
     display: none;
     text-align: center;
     backdrop-filter: blur(10px);
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 .game-message.system { border-color: #2196F3; }
-.game-message.victory { border-color: #4CAF50; background: rgba(76, 175, 80, 0.1); }
+.game-message.victory { 
+    border-color: #4CAF50; 
+    background: rgba(76, 175, 80, 0.1); 
+    animation: victoryPulse 2s ease-in-out;
+}
 .game-message.defeat { border-color: #f44336; background: rgba(244, 67, 54, 0.1); }
 .game-message.warning { border-color: #FF9800; background: rgba(255, 152, 0, 0.1); }
 .game-message.critical { border-color: #FF4081; background: rgba(255, 64, 129, 0.1); }
 .game-message.boss { border-color: #f44336; background: rgba(244, 67, 54, 0.1); }
+
+@keyframes victoryPulse {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
 
 .message-content {
     font-size: 1.5em;
@@ -702,7 +805,7 @@ body {
 
 .loading-progress {
     height: 100%;
-    background: linear-gradient(90deg, var(--health-green), var(--health-blue));
+    background: linear-gradient(90deg, var(--health-green), var(--primary-blue));
     border-radius: 4px;
     animation: loading 2s ease-in-out infinite;
 }
@@ -890,6 +993,26 @@ body {
     }
 }
 
+/* Level Up Animation */
+@keyframes levelUp {
+    0% { 
+        transform: scale(1); 
+        filter: brightness(1);
+    }
+    50% { 
+        transform: scale(1.3); 
+        filter: brightness(1.5) drop-shadow(0 0 20px #FFD700);
+    }
+    100% { 
+        transform: scale(1); 
+        filter: brightness(1);
+    }
+}
+
+.level-up-animation {
+    animation: levelUp 0.8s ease-in-out;
+}
+
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 1024px) {
     .container {
@@ -1003,6 +1126,17 @@ body {
     .loading-content h2 {
         font-size: 2em;
     }
+    
+    .stat-header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+    
+    .stat-footer {
+        flex-direction: column;
+        gap: 5px;
+    }
 }
 
 /* Scrollbar Styling */
@@ -1022,4 +1156,15 @@ body {
 
 .game-log::-webkit-scrollbar-thumb:hover {
     background: var(--primary-blue);
+}
+
+/* Selection Styling */
+::selection {
+    background: rgba(255, 215, 0, 0.3);
+    color: white;
+}
+
+::-moz-selection {
+    background: rgba(255, 215, 0, 0.3);
+    color: white;
 }
