@@ -233,34 +233,39 @@
 
         <!-- Controls & Game Management -->
         <div class="control-panel">
-            <div class="control-group">
-                <button id="resetBtn" class="btn reset-btn">
-                    <span class="btn-icon">🔄</span>
-                    New Game
-                </button>
-                
-                <button id="pauseBtn" class="btn pause-btn">
-                    <span class="btn-icon">⏸️</span>
-                    Pause
-                </button>
-                
-                <button id="soundBtn" class="btn sound-btn">
-                    <span class="btn-icon">🔊</span>
-                    Sound
-                </button>
-            </div>
-            
-            <div class="game-settings">
-                <div class="setting-item">
-                    <label for="difficultySelect">Difficulty:</label>
-                    <select id="difficultySelect" class="difficulty-select">
-                        <option value="easy">Easy</option>
-                        <option value="normal" selected>Normal</option>
-                        <option value="hard">Hard</option>
-                    </select>
-                </div>
-            </div>
+    <div class="control-group">
+        <button id="resetBtn" class="btn reset-btn">
+            <span class="btn-icon">🔄</span>
+            New Game
+        </button>
+        
+        <button id="skillTreeBtn" class="btn skill-tree-btn">
+            <span class="btn-icon">🌟</span>
+            Skill Tree
+        </button>
+        
+        <button id="pauseBtn" class="btn pause-btn">
+            <span class="btn-icon">⏸️</span>
+            Pause
+        </button>
+        
+        <button id="soundBtn" class="btn sound-btn">
+            <span class="btn-icon">🔊</span>
+            Sound
+        </button>
+    </div>
+    
+    <div class="game-settings">
+        <div class="setting-item">
+            <label for="difficultySelect">Difficulty:</label>
+            <select id="difficultySelect" class="difficulty-select">
+                <option value="easy">Easy</option>
+                <option value="normal" selected>Normal</option>
+                <option value="hard">Hard</option>
+            </select>
         </div>
+    </div>
+</div>
 
         <!-- Game Messages -->
         <div id="gameMessage" class="game-message">
@@ -282,21 +287,195 @@
         </div>
 
         <!-- NEW: Skill Tree Modal (Placeholder for Future) -->
-        <div id="skillTreeModal" class="skill-tree-modal" style="display: none;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>🌟 Skill Tree</h3>
-                    <button class="close-modal">&times;</button>
+        <div id="skillTreeModal" class="skill-tree-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🌟 SKILL TREE</h2>
+            <div class="skill-points-display">
+                <span class="skill-points-label">Available Skill Points:</span>
+                <span class="skill-points-count" id="modalSkillPoints">0</span>
+            </div>
+            <button class="close-modal" id="closeSkillModal">&times;</button>
+        </div>
+        
+        <div class="skill-branches">
+            <!-- Combat Skills Branch -->
+            <div class="skill-branch combat-branch">
+                <h3 class="branch-title">⚔️ COMBAT SKILLS</h3>
+                <div class="skills-grid">
+                    <div class="skill-card" data-skill="power-strike">
+                        <div class="skill-icon">💪</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">Power Strike</h4>
+                            <p class="skill-desc">Permanently increase attack damage by 5</p>
+                            <div class="skill-stats">
+                                <span class="stat-badge">+5 DMG</span>
+                            </div>
+                            <div class="skill-cost">
+                                <span class="cost-icon">✨</span>
+                                <span class="cost-amount">3 Points</span>
+                            </div>
+                        </div>
+                        <button class="btn-learn" data-skill="power-strike">Learn</button>
+                        <div class="skill-learned" style="display: none;">✅ Learned</div>
+                    </div>
+
+                    <div class="skill-card" data-skill="critical-master">
+                        <div class="skill-icon">🎯</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">Critical Master</h4>
+                            <p class="skill-desc">Increase critical hit chance by 15%</p>
+                            <div class="skill-stats">
+                                <span class="stat-badge">+15% Crit</span>
+                            </div>
+                            <div class="skill-cost">
+                                <span class="cost-icon">✨</span>
+                                <span class="cost-amount">4 Points</span>
+                            </div>
+                        </div>
+                        <button class="btn-learn" data-skill="critical-master">Learn</button>
+                        <div class="skill-learned" style="display: none;">✅ Learned</div>
+                    </div>
+
+                    <div class="skill-card" data-skill="quick-cooldown">
+                        <div class="skill-icon">⚡</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">Quick Cooldown</h4>
+                            <p class="skill-desc">Reduce all cooldowns by 1 turn</p>
+                            <div class="skill-stats">
+                                <span class="stat-badge">-1 Turn CD</span>
+                            </div>
+                            <div class="skill-cost">
+                                <span class="cost-icon">✨</span>
+                                <span class="cost-amount">5 Points</span>
+                            </div>
+                        </div>
+                        <button class="btn-learn" data-skill="quick-cooldown">Learn</button>
+                        <div class="skill-learned" style="display: none;">✅ Learned</div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p>Skill Tree coming soon! Use your skill points to unlock powerful abilities!</p>
-                    <div class="skill-points-display">
-                        Available Skill Points: <span id="modalSkillPoints">0</span>
+            </div>
+
+            <!-- Defense Skills Branch -->
+            <div class="skill-branch defense-branch">
+                <h3 class="branch-title">🛡️ DEFENSE SKILLS</h3>
+                <div class="skills-grid">
+                    <div class="skill-card" data-skill="vitality-boost">
+                        <div class="skill-icon">❤️</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">Vitality Boost</h4>
+                            <p class="skill-desc">Permanently increase max HP by 25</p>
+                            <div class="skill-stats">
+                                <span class="stat-badge">+25 HP</span>
+                            </div>
+                            <div class="skill-cost">
+                                <span class="cost-icon">✨</span>
+                                <span class="cost-amount">3 Points</span>
+                            </div>
+                        </div>
+                        <button class="btn-learn" data-skill="vitality-boost">Learn</button>
+                        <div class="skill-learned" style="display: none;">✅ Learned</div>
+                    </div>
+
+                    <div class="skill-card" data-skill="iron-skin">
+                        <div class="skill-icon">🛡️</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">Iron Skin</h4>
+                            <p class="skill-desc">Reduce all damage taken by 15%</p>
+                            <div class="skill-stats">
+                                <span class="stat-badge">-15% DMG</span>
+                            </div>
+                            <div class="skill-cost">
+                                <span class="cost-icon">✨</span>
+                                <span class="cost-amount">4 Points</span>
+                            </div>
+                        </div>
+                        <button class="btn-learn" data-skill="iron-skin">Learn</button>
+                        <div class="skill-learned" style="display: none;">✅ Learned</div>
+                    </div>
+
+                    <div class="skill-card" data-skill="second-wind">
+                        <div class="skill-icon">🌬️</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">Second Wind</h4>
+                            <p class="skill-desc">Auto-heal 30% when HP drops below 30%</p>
+                            <div class="skill-stats">
+                                <span class="stat-badge">Auto-heal</span>
+                            </div>
+                            <div class="skill-cost">
+                                <span class="cost-icon">✨</span>
+                                <span class="cost-amount">5 Points</span>
+                            </div>
+                        </div>
+                        <button class="btn-learn" data-skill="second-wind">Learn</button>
+                        <div class="skill-learned" style="display: none;">✅ Learned</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special Skills Branch -->
+            <div class="skill-branch special-branch">
+                <h3 class="branch-title">✨ SPECIAL SKILLS</h3>
+                <div class="skills-grid">
+                    <div class="skill-card" data-skill="lightning-reflexes">
+                        <div class="skill-icon">⚡</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">Lightning Reflexes</h4>
+                            <p class="skill-desc">20% chance to dodge enemy attacks</p>
+                            <div class="skill-stats">
+                                <span class="stat-badge">20% Dodge</span>
+                            </div>
+                            <div class="skill-cost">
+                                <span class="cost-icon">✨</span>
+                                <span class="cost-amount">4 Points</span>
+                            </div>
+                        </div>
+                        <button class="btn-learn" data-skill="lightning-reflexes">Learn</button>
+                        <div class="skill-learned" style="display: none;">✅ Learned</div>
+                    </div>
+
+                    <div class="skill-card" data-skill="life-steal">
+                        <div class="skill-icon">🩸</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">Life Steal</h4>
+                            <p class="skill-desc">Heal for 25% of damage dealt</p>
+                            <div class="skill-stats">
+                                <span class="stat-badge">25% Lifesteal</span>
+                            </div>
+                            <div class="skill-cost">
+                                <span class="cost-icon">✨</span>
+                                <span class="cost-amount">5 Points</span>
+                            </div>
+                        </div>
+                        <button class="btn-learn" data-skill="life-steal">Learn</button>
+                        <div class="skill-learned" style="display: none;">✅ Learned</div>
+                    </div>
+
+                    <div class="skill-card ultimate-skill" data-skill="phoenix-revival">
+                        <div class="skill-icon">🔥</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">Phoenix Revival</h4>
+                            <p class="skill-desc">Revive once per battle with 50% HP</p>
+                            <div class="skill-stats">
+                                <span class="stat-badge ultimate">ULTIMATE</span>
+                            </div>
+                            <div class="skill-cost">
+                                <span class="cost-icon">✨</span>
+                                <span class="cost-amount">10 Points</span>
+                            </div>
+                        </div>
+                        <button class="btn-learn" data-skill="phoenix-revival">Learn</button>
+                        <div class="skill-learned" style="display: none;">✅ Learned</div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="modal-footer">
+            <button class="btn-close-modal" id="closeSkillTree">Close Skill Tree</button>
+        </div>
     </div>
+</div>
 
     <script src="game.js"></script>
 </body>
